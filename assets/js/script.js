@@ -44,6 +44,57 @@ var saveTasks = function () {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+$(".list-group").on("click", "span", function(){
+    // get current text (i.e. date)
+    var date = $(this)
+        .text()
+        .trim();
+    
+    // create new input element
+    var dateInput = $("<input>")
+        .attr("type", "text")
+        . addClass("form-control")
+        .val(date);
+    
+    // swap out elements
+    $(this).replaceWith(dateInput);
+    
+    // automatically focus on new element
+    dateInput.trigger("focus");
+})
+
+$(".list-group").on("blur","input[type='text']",function(){
+    var date=$(this)
+        .val()
+        .trim();
+
+    // get parent ul's id attribute
+    var status = $(this)
+        .closest(".list-group")
+        .attr("id")
+        .replace("list-","");
+
+    // get the task's position in the list of other li elements
+    var index = $(this)
+        .closest(".list-group-item")
+        .index();
+
+
+    tasks[status][index].date=date;
+    saveTasks();
+
+    // recreate p element
+    var taskSpan = $("<span>")
+        .addClass("badge badge-primary badge-pill")
+        .text(date);
+    
+    // replace textarea with p element
+    $(this).replaceWith(taskSpan);
+
+})
+
+
+
 $(".list-group").on("click", "p", function () {
     var text = $(this)
         .text()
